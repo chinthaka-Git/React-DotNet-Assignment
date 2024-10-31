@@ -14,7 +14,7 @@ function EmployeePage() {
   const [employees, setEmployees] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [show, setShow] = useState(false);
-  const [confirmDeleteShow, setConfirmDeleteShow] = useState(false); 
+  const [confirmDeleteShow, setConfirmDeleteShow] = useState(false);
   const [employee, setEmployee] = useState();
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
 
@@ -34,12 +34,14 @@ function EmployeePage() {
   const handleSave = async (data) => {
     await addEmployee(data);
     fetchEmployees();
+    setShow(false);
   };
 
   const handleEdit = async (emp) => {
     await updateEmployee(employee.employeeId, emp);
     fetchEmployees();
     setIsEdit(false);
+    setShow(false);
   };
 
   const onClickEdit = (employee) => {
@@ -56,10 +58,14 @@ function EmployeePage() {
     }
   };
 
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setEmployee(null); 
+    setIsEdit(false); 
+    setShow(true);
+  };
 
   const handleConfirmDelete = (id) => {
-    setEmployeeToDelete(id); 
+    setEmployeeToDelete(id);
     setConfirmDeleteShow(true);
   };
 
@@ -81,14 +87,19 @@ function EmployeePage() {
       <EmployeeTable
         employees={employees}
         onEdit={onClickEdit}
-        onDelete={handleConfirmDelete} 
+        onDelete={handleConfirmDelete}
       />
-      
+
       <ConfirmDeleteModal
         show={confirmDeleteShow}
         onHide={() => setConfirmDeleteShow(false)}
         onConfirm={handleDelete}
-        name={employeeToDelete ? employees.find(emp => emp.employeeId === employeeToDelete)?.firstName : ""}
+        name={
+          employeeToDelete
+            ? employees.find((emp) => emp.employeeId === employeeToDelete)
+                ?.firstName
+            : ""
+        }
       />
     </div>
   );
